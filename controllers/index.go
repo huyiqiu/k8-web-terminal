@@ -1,12 +1,14 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
+	"context"
 	"log"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"strings"
-	"k8s.io/api/core/v1"
 	"time"
+
+	"github.com/astaxie/beego"
+	"k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 
@@ -35,7 +37,7 @@ func (c *MainController) Get() {
 // @Failure 404 body is empty
 // @router /api/nodes [get]
 func (c *MainController) Nodes()  {
-	resp, err := Clientset.CoreV1().Nodes().List(metav1.ListOptions{})
+	resp, err := Clientset.CoreV1().Nodes().List(context.Background(),metav1.ListOptions{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,7 +53,7 @@ func (c *MainController) Nodes()  {
 func (c *MainController) NodePods()  {
 	nodeip := c.GetString("node")
 	//resp, err := Clientset.CoreV1().Nodes().List(metav1.ListOptions{})
-	nodespod111, err := Clientset.CoreV1().Pods(v1.NamespaceAll).List(metav1.ListOptions{
+	nodespod111, err := Clientset.CoreV1().Pods(v1.NamespaceAll).List(context.Background(),metav1.ListOptions{
 		FieldSelector: "spec.nodeName=" + nodeip,
 	})
 	if err != nil {
